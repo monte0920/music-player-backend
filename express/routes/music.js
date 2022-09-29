@@ -18,19 +18,29 @@ async function getById(req, res) {
 }
 
 async function create(req, res) {
-	UploaderManager(req, "musics", async (data) => {
-		console.log(data)
-	});
-	// if (req.body.id) {
-	// 	res
-	// 		.status(400)
-	// 		.send(
-	// 			`Bad request: ID should not be provided, since it is determined automatically by the database.`
-	// 		);
-	// } else {
-	// 	await models.user.create(req.body);
-	// 	res.status(201).end();
-	// }
+	const { type, instrument } = req.body;
+
+	if (!type || !instrument) {
+		res
+			.status(400)
+			.send(
+				`Bad request: instrument should not be provided, since it is determined automatically by the database.`
+			);
+	} else {
+		UploaderManager(req, "musics", async (data) => {
+			try {
+				await models.music.create({
+					file_name: data[0].name,
+					type,
+					instrument,
+				});
+				res.status(200).send("success");
+			} catch (error) {
+				console.log(error);
+				res.status(500).send(`Server error`);
+			}
+		});
+	}
 }
 
 async function update(req, res) {

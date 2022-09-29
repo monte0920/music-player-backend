@@ -1,4 +1,4 @@
-const app = require('./express/app');
+const app = require('./app');
 const sequelize = require('./sequelize');
 const PORT = 8080;
 

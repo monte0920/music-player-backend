@@ -1,5 +1,6 @@
 const fs = require("fs");
 const uniqid = require("uniqid");
+const { BASE_URL } = require("../config");
 
 const UploaderManager = async ({ files }, filepath, callback) => {
     var index = 0;
@@ -11,7 +12,7 @@ const UploaderManager = async ({ files }, filepath, callback) => {
         var filename = `${uniqid()}_${filepath}`;
         var originalname = file.originalname;
         var originalname = originalname.split(".");
-        var new_path = `${__dirname}/uploads/${filepath}/${filename}.${originalname[originalname.length - 1]
+        var new_path = `${BASE_URL}/uploads/${filepath}/${filename}.${originalname[originalname.length - 1]
             }`;
         var old_path = file.path;
         var save_path = filename + "." + originalname[originalname.length - 1];
@@ -24,7 +25,6 @@ const UploaderManager = async ({ files }, filepath, callback) => {
                         realname: file.originalname,
                         name: save_path,
                         size: file.size,
-                        external_url: `http://music.api.zlp.rasta.finance/${filepath}/${save_path}`
                     });
                     next_file = files[++index];
                     if (next_file) {
