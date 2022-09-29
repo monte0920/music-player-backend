@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
 );
 
 const modelDefiners = [
-	require("./models/file.model"),
+	require("./models/music.model"),
 ];
 
 // We define all models according to their files.
