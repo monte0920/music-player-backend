@@ -2,11 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const routes = {
-	users: require('./routes/users'),
-	instruments: require('./routes/instruments'),
-	orchestras: require('./routes/orchestras'),
-	// Add more routes here...
-	// items: require('./routes/items'),
+	users: require('./routes/file'),
 };
 
 const app = express();
