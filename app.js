@@ -37,4 +37,9 @@ app.post(
 	musicController.create
 );
 
+app.get(
+	`/api/music`,
+	musicController.getAll
+);
+
 module.exports = app;
