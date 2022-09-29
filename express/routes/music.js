@@ -1,9 +1,11 @@
+const fs = require("fs");
 const UploaderManager = require("../Filemanager");
 const { models } = require("../../sequelize");
 const { getIdParam } = require("../helpers");
+const { BASE_URL } = require("../../config");
 
 async function getAll(req, res) {
-	const musics = await models.music.findAll();
+	const musics = await find();
 	res.status(200).json(musics);
 }
 
@@ -28,21 +30,62 @@ async function create(req, res) {
 			);
 	} else {
 		UploaderManager(req, "musics", async (data) => {
-			try {
-				await models.music.create({
-					file_name: data[0].name,
+			const music = await models.music.findAll({
+				where: {
 					type,
 					instrument,
-				});
+				},
+			});
 
-				const musics = await models.music.findAll();
-				res.status(200).json(musics);
-			} catch (error) {
-				console.log(error);
-				res.status(500).send(false);
+			if (music.length) {
+				try {
+					await fs.unlinkSync(
+						`${BASE_URL}/uploads/musics/${music[0].file_name}`
+					);
+					console.log(`successfully deleted ${music[0].file_name}`);
+
+					await models.music.update(
+						{ file_name: data[0].name },
+						{
+							where: {
+								id: music[0].id,
+							},
+						}
+					);
+					
+					const musics = await find();
+					res.status(200).json(musics);
+				} catch (error) {
+					console.error("there was an error:", error.message);
+				}
+			} else {
+				try {
+					await models.music.create({
+						file_name: data[0].name,
+						type,
+						instrument,
+					});
+					const musics = await find();
+					res.status(200).json(musics);
+				} catch (error) {
+					console.log(error);
+					res.status(500).send(false);
+				}
 			}
 		});
 	}
+}
+
+async function find() {
+	const musics = await models.music.findAll({
+		order: [["instrument", "ASC"]],
+	});
+	return musics;
+}
+
+async function findOne(id) {
+	const musics = await models.music.findByPk(id);
+	return musics;
 }
 
 async function update(req, res) {
@@ -66,13 +109,25 @@ async function update(req, res) {
 }
 
 async function remove(req, res) {
-	const id = getIdParam(req);
-	await models.user.destroy({
-		where: {
-			id: id,
-		},
-	});
-	res.status(200).end();
+	const id = req.params.id;
+	if (!id) return res.status(401).end();
+
+	const music = await findOne(id);
+	try {
+		await fs.unlinkSync(`${BASE_URL}/uploads/musics/${music.file_name}`);
+		console.log(`successfully deleted ${music.file_name}`);
+
+		await models.music.destroy({
+			where: {
+				id: id,
+			},
+		});
+	} catch (error) {
+		console.error("there was an error:", error.message);
+	}
+
+	const musics = await find();
+	res.status(200).json(musics);
 }
 
 module.exports = {
