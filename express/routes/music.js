@@ -3,8 +3,8 @@ const { models } = require("../../sequelize");
 const { getIdParam } = require("../helpers");
 
 async function getAll(req, res) {
-	const users = await models.user.findAll();
-	res.status(200).json(users);
+	const musics = await models.music.findAll();
+	res.status(200).json(musics);
 }
 
 async function getById(req, res) {
@@ -34,10 +34,12 @@ async function create(req, res) {
 					type,
 					instrument,
 				});
-				res.status(200).send("success");
+
+				const musics = await models.music.findAll();
+				res.status(200).json(musics);
 			} catch (error) {
 				console.log(error);
-				res.status(500).send(`Server error`);
+				res.status(500).send(false);
 			}
 		});
 	}
