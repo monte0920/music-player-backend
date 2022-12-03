@@ -1,1 +1,1 @@
-exports.BASE_URL = __dirname;
+exports.ROOT_PATH = __dirname;

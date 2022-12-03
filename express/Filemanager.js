@@ -1,6 +1,6 @@
 const fs = require("fs");
 const uniqid = require("uniqid");
-const { BASE_URL } = require("../config");
+const { ROOT_PATH } = require("../config");
 
 const UploaderManager = async ({ files }, filepath, callback) => {
     var index = 0;
@@ -12,7 +12,7 @@ const UploaderManager = async ({ files }, filepath, callback) => {
         var filename = `${uniqid()}_${filepath}`;
         var originalname = file.originalname;
         var originalname = originalname.split(".");
-        var new_path = `${BASE_URL}/uploads/${filepath}/${filename}.${originalname[originalname.length - 1]
+        var new_path = `${ROOT_PATH}/uploads/${filepath}/${filename}.${originalname[originalname.length - 1]
             }`;
         var old_path = file.path;
         var save_path = filename + "." + originalname[originalname.length - 1];

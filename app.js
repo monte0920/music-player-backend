@@ -4,7 +4,7 @@ const musicController = require("./express/routes/music");
 const cors = require("cors");
 const path = require("path");
 const multer = require("multer");
-const { BASE_URL } = require("./config.js");
+const { ROOT_PATH } = require("./config.js");
 const app = express();
 
 app.use(cors("*"));
@@ -24,7 +24,7 @@ app.use(
 	})
 );
 
-app.use(express.static(path.join(BASE_URL, "uploads")));
+app.use(express.static(path.join(ROOT_PATH, "uploads")));
 
 // We provide a root route just as an example
 app.get("/", (req, res) => {
@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 
 app.post(
 	`/api/music`,
-	multer({ dest: `${BASE_URL}/uploads/musics/` }).any(),
+	multer({ dest: `${ROOT_PATH}/uploads/musics/` }).any(),
 	musicController.create
 );
 
