@@ -2,7 +2,7 @@ const fs = require("fs");
 const UploaderManager = require("../Filemanager");
 const { models } = require("../../sequelize");
 const { getIdParam } = require("../helpers");
-const { BASE_URL } = require("../../config");
+const { ROOT_PATH } = require("../../config");
 
 async function getAll(req, res) {
 	const musics = await find();
@@ -40,7 +40,7 @@ async function create(req, res) {
 			if (music.length) {
 				try {
 					await fs.unlinkSync(
-						`${BASE_URL}/uploads/musics/${music[0].file_name}`
+						`${ROOT_PATH}/uploads/musics/${music[0].file_name}`
 					);
 					console.log(`successfully deleted ${music[0].file_name}`);
 
@@ -52,7 +52,7 @@ async function create(req, res) {
 							},
 						}
 					);
-					
+
 					const musics = await find();
 					res.status(200).json(musics);
 				} catch (error) {
@@ -114,7 +114,7 @@ async function remove(req, res) {
 
 	const music = await findOne(id);
 	try {
-		await fs.unlinkSync(`${BASE_URL}/uploads/musics/${music.file_name}`);
+		await fs.unlinkSync(`${ROOT_PATH}/uploads/musics/${music.file_name}`);
 		console.log(`successfully deleted ${music.file_name}`);
 
 		await models.music.destroy({
